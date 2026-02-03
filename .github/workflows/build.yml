@@ -43,18 +43,34 @@ jobs:
 
       - name: Upload Maven artifacts
         if: matrix.build-tool == 'maven'
+        run: |
+          cd target
+          for jar in *.jar; do
+            mv "$jar" "maven-$jar"
+          done
+
+      - name: Upload Maven artifacts
+        if: matrix.build-tool == 'maven'
         uses: actions/upload-artifact@v4
         with:
           name: maven-artifacts
-          path: target/*.jar
+          path: target/maven-*.jar
           retention-days: 30
+
+      - name: Rename Gradle artifacts
+        if: matrix.build-tool == 'gradle'
+        run: |
+          cd build/libs
+          for jar in *.jar; do
+            mv "$jar" "gradle-$jar"
+          done
 
       - name: Upload Gradle artifacts
         if: matrix.build-tool == 'gradle'
         uses: actions/upload-artifact@v4
         with:
           name: gradle-artifacts
-          path: build/libs/*.jar
+          path: build/libs/gradle-*.jar
           retention-days: 30
 
   release:
@@ -74,7 +90,7 @@ jobs:
       - name: Extract version
         id: version
         run: |
-          VERSION=$(grep -oP 'version:\s*['\''"]\K[0-9.]+' src/main/resources/paper-plugin.yml || echo "1.1.0")
+          VERSION=$(grep -oP '^version:\s*['\''"]\K[0-9.]+' src/main/resources/paper-plugin.yml || echo "1.1.0")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Create Release
