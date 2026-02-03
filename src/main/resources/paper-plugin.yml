@@ -1,0 +1,16 @@
+name: TranforCPlusPlus
+version: '1.1.0'
+main: com.github.tranforcpp.TranforCPlusPlus
+api-version: '1.20'
+author: 'hekuo,Xiao-QDev'
+description: '让您的C++代码运行在Minecraft:JAVA服务器上!'
+permissions:
+  tranforcpp.use:
+    description: Allow using tranforcpp command
+    default: op
+  tranforcpp.reload:
+    description: Allow reloading C++ plugins
+    default: op
+  tranforcpp.version:
+    description: Allow checking plugin version
+    default: op
