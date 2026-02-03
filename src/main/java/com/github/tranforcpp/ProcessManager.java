@@ -161,7 +161,7 @@ public class ProcessManager implements Listener {
     private void handleCppMessage(JsonObject json) {
         try {
             String action = json.get("action").getAsString();
-            
+
             switch (action) {
                 case "broadcast":
                     handleBroadcast(json);
@@ -171,6 +171,9 @@ public class ProcessManager implements Listener {
                     break;
                 case "console":
                     plugin.getLogger().info(json.get("message").getAsString());
+                    break;
+                case "dispatchCommand":
+                    handleDispatchCommand(json);
                     break;
                 default:
                     plugin.getLogger().warning("Unknown action: " + action);
@@ -203,6 +206,25 @@ public class ProcessManager implements Listener {
             }
         } catch (Exception e) {
             plugin.getLogger().warning("Error sending private message: " + e.getMessage());
+        }
+    }
+
+    private void handleDispatchCommand(JsonObject json) {
+        try {
+            String command = json.get("command").getAsString();
+            boolean sync = json.has("sync") && json.get("sync").getAsBoolean();
+
+            if (sync) {
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+                });
+            } else {
+                Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+                });
+            }
+        } catch (Exception e) {
+            plugin.getLogger().warning("Error dispatching command: " + e.getMessage());
         }
     }
 

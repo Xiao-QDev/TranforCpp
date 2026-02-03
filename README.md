@@ -114,6 +114,42 @@ gradlew.bat clean build
 - `void broadcast(const char* message)` - 广播消息到所有玩家
 - `void sendMsg(const char* player, const char* message)` - 给指定玩家发送消息
 - `void console(const char* message)` - 输出到控制台
+- `void dispatchCommand(const char* command, bool sync = false)` - 执行 Minecraft 控制台指令
+
+### 指令执行函数详解
+
+**`dispatchCommand` 参数说明：**
+- `command`: 要执行的指令字符串（无需带斜杠，但建议带上）
+- `sync`: 是否在主线程执行（默认 `false` 异步执行）
+
+**使用示例：**
+
+```cpp
+// 异步执行指令（推荐用于大多数情况）
+dispatchCommand("/say Hello from C++");
+dispatchCommand("gamemode creative PlayerName");
+
+// 同步执行指令（需要操作主线程数据时使用）
+dispatchCommand("/title @a title {text:'Welcome!',color:'gold'}", true);
+dispatchCommand("/give PlayerName diamond 64", true);
+```
+
+**JSON 通信格式：**
+
+C++ 端发送到 Java 端的 JSON 格式：
+
+```json
+{
+  "action": "dispatchCommand",
+  "command": "/say Hello from C++",
+  "sync": false
+}
+```
+
+字段说明：
+- `action`: 固定为 `"dispatchCommand"`
+- `command`: 要执行的指令字符串
+- `sync`: `true` 主线程执行，`false` 异步线程执行（可选，默认 false）
 
 ## 命令
 
