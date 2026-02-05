@@ -131,3 +131,4 @@ gradlew.bat clean build
 3. JSON 参数解析需要根据事件类型正确处理参数数量
 4. 修改 Java 端代码后需要重新编译 JAR
 5. 修改 C++ 代码后使用 `/tranforcpp reload` 重载
+6. 辛巴巴,巴鲁比亚
